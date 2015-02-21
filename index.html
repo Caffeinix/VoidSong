@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Void Song</title>
+	<link href='http://fonts.googleapis.com/css?family=Play:400,700' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Titillium+Web:400,300,300italic,400italic,700,700italic' rel='stylesheet' type='text/css'>	<style type="text/css">
+	#tac_slides {
+		position: relative;
+		height: 778px;
+		max-width: 1000px;
+	}
+	#tac_slides > figure {
+		transition: opacity 0.2s ease-in;
+		position: absolute;
+		display: block;
+		margin: 0;
+	}
+	#tac_slides > figure > figcaption {
+		background-color: black;
+	}
+	#slide_controls {
+		position: absolute;
+		left: 16px;
+		bottom: 132px;
+	}
+	.slide-control {
+		color: white;
+		background-color: black;
+		text-decoration: none;
+		box-shadow: inset -2px -2px 0px rgba(0, 255, 0, 0.25),
+								0 1px 4px black;
+		border: 1px solid lime;
+		border-radius: 6px;
+		padding: 1em;
+	}
+
+	body {
+		margin: 0;
+		background: black url(nebula.jpg) left top fixed;
+		color: white;
+		font-size: 13pt;
+		font-family: 'Titillium Web', sans-serif;
+		font-weight: 300;
+	}
+	h1,h2,h3,h4,h5,h6 {
+		font-family: 'Play', sans-serif;
+		font-weight: 700;
+	}
+	h1 {
+		font-size: 1.75em;
+	}
+	p {
+		margin-left: 1em;
+	}
+	blockquote {
+		margin: 0;
+		padding: 0 2em;
+	}
+	hr {
+		height: 1px;
+		border: none;
+		background-color: rgba(255, 255, 255, 0.15);
+		box-shadow: 0 0 3px 0.5px rgba(255, 255, 255, 0.25);
+		margin-left: 1em;
+	}
+	.nav-background {
+		background: black url(nebula.jpg) left top fixed;
+		height: 48px;
+	  -webkit-filter: blur(2px);
+    -moz-filter: blur(2px);
+    -o-filter: blur(2px);
+    -ms-filter: blur(2px);
+    filter: blur(2px);
+	}
+	nav {
+		position: relative;
+		top: -48px;
+		background-color: rgba(255, 255, 255, 0.4);
+		background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.4));
+		margin-bottom: -16px;
+		box-shadow: 0 2px 6px black,
+								inset 0 -2px 32px rgba(255, 255, 255, 0.2);
+  }
+	nav ul {
+		margin: 0;
+		display: flex;
+		align-items: center;
+		height: 48px;
+	}
+	nav ul > * {
+		display: inline-block;
+		margin-right: 2em;
+		white-space: nowrap;
+	}
+	nav a[href] {
+		text-decoration: none;
+		color: #FFF;
+		font-family: 'Play', sans-serif;
+		font-weight: 700;
+		text-shadow: 0 0 4px black;
+		transition: color 0.2s ease-in-out;
+	}
+	nav a[href]:hover {
+		color: #CFF;
+	}
+	main {
+		margin-left: auto;
+		margin-right: auto;
+		position: relative;
+		max-width: 1048px;
+	}
+
+	main a[href] {
+		color: #AAF;
+		text-decoration: none;
+	}
+	main a[href]:hover {
+		text-decoration: underline;
+	}
+
+	section {
+		border-radius: 4px;
+		box-shadow: 0 0 6px 2px rgba(255, 255, 255, 0.2);
+		background-color: rgba(0, 0, 0, 0.75);
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 3em;
+		padding: 0 24px;
+		overflow-x: visible;
+		overflow-y: hidden;
+		max-width: 1000px;
+		position: absolute;
+		left: 0;
+		opacity: 1;
+		transition: opacity 0.4s ease-in-out,
+								left 0.4s ease-in-out;
+	}
+
+	section#interface {
+		width: 1000px;
+	}
+
+	[invisible] {
+		left: -512px;
+		opacity: 0;
+	}
+
+	[hidden] {
+		display: none;
+	}
+	</style>
+
+	<script type="text/javascript">
+
+	/**
+	 * Converts straight single and double quotes to smart quotes.  We do this in JS because I can't be bothered to do it
+	 * ahead of time (or to sprinkle <q> tags everywhere), and it only takes about 5 ms.
+	 */
+	function educateQuotes() {
+		var startDoubleQuote = /([\b\s])"/g;
+		var endDoubleQuote = /"/g;
+		var startSingleQuote = /([\b\s])'/g;
+		var endSingleQuote = /'/g;
+
+		// Only educate quotes inside <p> tags, in case we have a <code> block or something somewhere in the future.
+		var paras = document.getElementsByTagName('p');
+		for (var i = 0; i < paras.length; ++i) {
+			var walker = document.createTreeWalker(paras[i], NodeFilter.SHOW_TEXT, null, false);
+			var node;
+			while (node = walker.nextNode()) {
+				node.data = node.data.replace(startDoubleQuote, '$1“').replace(endDoubleQuote, '”');
+				node.data = node.data.replace(startSingleQuote, '$1‘').replace(endSingleQuote, '’');
+			}
+		}
+	}
+
+	/**
+	 * Sets up the display of sections by initially hiding them all and adding transitionend listeners to remove them
+	 * from the layout again (using display: none) when they are hidden in the future.  This is necessary because we
+	 * don't want to remove them from the layout until after they've had a chance to animate off screen, but if we don't
+	 * remove them from the layout at all then the scroll bar will reflect the longest section instead of the current.
+	 */
+	function setupSections() {
+		var sections = document.getElementsByTagName('section');
+		for (var i = 0; i < sections.length; ++i) {
+			var section = sections[i];
+			section.setAttribute('invisible', '');
+			section.setAttribute('hidden', '');
+			section.addEventListener('transitionend', function(evt) {
+				if (evt.target.hasAttribute('invisible')) {
+					evt.target.setAttribute('hidden', '');
+				}
+			});
+		}
+	}
+
+	/**
+	 * Sets up the tables of contents within various sections by looking for elements with a class of "toc", then
+	 * scanning their parent section for h2 tags (subheaders) and populating the table of content with links to
+	 * newly created anchors pointing to each subheader.
+	 */
+	function setupTablesOfContents() {
+		/**
+		 * Returns a string suitable for use as the name of an anchor given the section and the text to link to.
+		 * @param  {Element} section The section containing the anchor destination.
+		 * @param  {!String} text    The text the anchor should link to.
+		 * @return {!String}         A name for the anchor.
+		 */
+		var makeAnchorName = function(section, text) {
+			return section.id + '_' + text.replace(/\W/, '_').toLowerCase();
+		}
+		var tocs = document.querySelectorAll('.toc');
+		for (var i = 0; i < tocs.length; ++i) {
+			var toc = tocs[i];
+			var section = toc.parentNode;
+			var subheaders = section.getElementsByTagName('h2');
+			for (var j = 0; j < subheaders.length; ++j) {
+				var subheader = subheaders[j];
+				var anchorName = makeAnchorName(section, subheader.textContent);
+				var anchor = document.createElement('a');
+				anchor.setAttribute('name', anchorName);
+				while (subheader.childNodes.length) {
+					anchor.appendChild(subheader.firstChild);
+				}
+				subheader.appendChild(anchor);
+				var link = document.createElement('a');
+				link.setAttribute('href', '#' + anchorName);
+				link.appendChild(document.createTextNode(subheader.textContent));
+				var entry = document.createElement('li');
+				entry.appendChild(link);
+				toc.appendChild(entry);
+			}
+		}
+	}
+
+	/**
+	 * Shows the section with the given ID by adding it back to the layout and then animating it in.
+	 * @param {!string} id
+	 */
+	function showSection(id) {
+		var target = document.getElementById(id);
+		if (!target) {
+			return;
+		}
+		var sections = document.getElementsByTagName('section');
+		for (var i = 0; i < sections.length; ++i) {
+			var section = sections[i];
+			if (section === target) {
+				section.removeAttribute('hidden');
+				window.setTimeout(function(sec) {
+					return function() {
+						sec.removeAttribute('invisible');
+					}
+				}(section), 20);
+			} else {
+				section.setAttribute('invisible', '');
+			}
+		}
+	}
+	</script>
+
+</head>
+<body>
+
+<div class="nav-background"></div>
+<nav>
+<ul>
+<li><a href="javascript:void(0)" onclick="showSection('about')">About</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('combat')">Combat</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('stations')">Stations</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('technology')">Technology</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('interface')">User Interface</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('world')">The World</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('story')">Story</a></li>
+<li><a href="javascript:void(0)" onclick="showSection('implementation')">Implementation</a></li>
+</ul>
+</nav>
+
+<main>
+<section id="about">
+<h1>About <i>Void Song</i></h1>
+
+<p><i>Void Song</i> is a cooperative tactical space simulator featuring physically believable real-time capital ship combat.  Ships in <i>Void Song</i> are equipped with FTL jump drives, but are otherwise subject to all the usual laws of physics &mdash; most notably light lag.  Unlike other space combat games where maneuverability, accuracy, and other dogfighting skills are prioritized, combat in <i>Void Song</i> requires you to understand the nature of strategic and tactical information and how it propagates through space.</p>
+
+<p><i>Void Song</i> is in the early planning stages, and will almost certainly never happen without support.  If you are interested, please <a href="mailto:phoenix1701@gmail.com">contact me</a>.</p>
+</section>
+
+<section id="combat">
+<h1>An Introduction to Combat</i></h1>
+
+<blockquote>
+<p>It's been a routine patrol so far.  You've locked onto the signal of the transceiver beacon and closed to within 50K kilometers, and you've just given the order to begin uploading your patrol logs.  Without warning, your tactical officer suddenly exclaims, "jump pulse detected, eight light seconds!"  That's deeply concerning.  At that range, determining the ship silhouette will take many seconds' worth of incoming data.  It might be friendly, but if it's not...  a dreadnought is capable of accelerating a slug to nearly 0.5c.  Worse, you've been keeping station near the transceiver for the last minute and a half, cheerfully broadcasting your heat signature for all to see, so an attacker with a halfway decent astrogation algorithm could have had their firing solution worked out within a few milliseconds of their emergence.  That gives you about sixteen seconds, of which you've already spent two waiting for your tactical officer to finish speaking.</p>
+
+<p>Without a second's further pause, you reply: "tactical jump, ten light seconds".  In the frigate you previously commanded, you might have issued an order for evasive acceleration, but you know this cruiser doesn't have the impulse to get out of its own footprint in that amount of time.  You hear the ever-present rumble of the generator cores roughen into a buzz, a sure sign that your engineer has brought the reactors to maximum output.  That will charge the jump drive capacitors faster, but it'll also cause waste heat to build up quickly beneath the hull, which means you'll need to avoid a prolonged firefight or risk cooking the ship.  A calculated risk, but you're fairly sure you approve.</p>
+
+<p>The next few seconds pass in a tense silence among the bridge crew, as the harmonics of the generator cores reach a crescendo.  Tactical turns, her brow furrowed.  "Sensors have sorted out an additional EM pulse within the jump discharge, captain.  Might be weapons fire."  If so, it happened eight seconds ago, and the projectile is already halfway here.  For a moment, you are distressingly aware of all the myriad components and parts that make up a jump drive, and how many ways there are for any one of them to go wrong&hellip; and then the image on the external camera flashes briefly white, and the red indicator on the main tactical display leaps backwards to eighteen light seconds.  A beat later, the indicator pulses and brightens as your sensors pick up the intruder's initial jump again, its light cone having just reached your current location.  "Navigation", you intone, keeping your voice studiously calm.  "I think it's time we take the fight to them.  Alter course off their firing axis, then jump in two light seconds out.  Tactical, if they're friendlies, you have about two seconds to let me know.  Otherwise, today is about to get exciting."</p>
+</blockquote>
+
+<hr>
+
+<p>While combat is far from the only thing to do in <i>Void Song</i>, it's something you'll probably be doing a lot of.  The preceding narrative goes over some of the basic concepts of combat in <i>Void Song</i>: light lag, jump drive, power management, heat buildup, and sensor data.  Information is precious, but it's only as valuable as it is recent.  And every moment you remain on the same course, you're broadcasting your own stream of data in the form of photons from reflected starlight and your ship's own blackbody radiation.  Will you get in close to get a more up-to-date view of the situation, or hang back where you have more time to deal with high-gamma projectiles and other threats?  A good captain not only knows everything she can about the enemy, she also knows exactly what the enemy knows about her, and when.</p>
+
+<p><i>Void Song</i>'s vision of space combat is not just more realistic, it's also more fun.  With a series of well-timed jumps, a skilled crew can cause several copies of their ship to appear and fire from various different directions simultaneously, cutting off likely escape routes or simply concentrating fire &mdash; but only if the firing solution is accurate enough.  Frequent changes of heading and the occasional short-range jump help to ensure that relativistic attacks don't take you by surprise.  A close-range knife fight can help you press your advantage by forcing the enemy to raise a defensive screen, siphoning power away from their jump drives and potentially causing them to build up more heat than they can safely discharge.  Use these tactics skillfully and anticipate what the enemy will do before the news of their actions reaches you, and you will control the battle.  Overcommit or fail to grasp the implications of a new development before it's too late, and you may pay with your ship.</i></p>
+</section>
+
+<section id="implementation">
+<h1>Implementing <i>Void Song</i></h1>
+
+<p>Special relativity is hard.  General relativity is harder.  With no privileged viewpoint and no canonical ordering of events, how can anyone hope to write a full-fledged relativistic space combat simulator?  Good question.  It would doubtless be very difficult, which is why <i>Void Song</i> doesn't try.  Instead, the game's design takes advantage of a small but vital loophole: jump drives don't cause acceleration.  The velocity of every ship in the game area will always be within a few hundred km/s of each other, so relativistic effects can generally be ignored.  The only objects in the game capable of relativistic velocities are projectiles, which have no AI and basically just travel in a straight line until they hit something, so modeling them is not so difficult.</p>
+
+<p>Instead, the core gameplay revolves around the concept of light lag &mdash; that is, the fact that your view of a ship five light seconds away from you is five seconds into the past, and their view of your ship is also five seconds old.  This can be implemented by having each ship keep a journal of their actions, and revealing the journal of each ship to other ships with some offset based on their current light lag.  This approach lets us easily model events that would otherwise be confusing, such as a ship appearing to be in two different places at once: jumping <em>to</em> a location simply instantiates the ship at that location and starts playing its journal at the appropriate offset, and jumping <em>from</em> a location destroys that instance of the ship.  Depending on the jump distance and direction, this could result in multiple copies of the ship, or in a period of time where the ship appears to be nowhere (because the light cone from the ship's new position has not yet arrived at the observer's location).  Placing reasonable limits on sensors allows us to place each ship's journal in a finite-sized ring buffer rather than consuming all available system memory, and only recording acceleration events to the journal means we can simply interpolate between a few infrequent journal entries rather than polling the ship's position and velocity with some small time quantum.  This is important, since in the worst case (all ships within the sensor range of all other ships), updating position data is <span class="math"><i>O</i>(<i>n</i><sup><small>2</small></sup></span>) over all ships.</p>
+
+<p><i>Void Song</i> is envisioned as a full 3D environment implemented in Unity.  Due to the distances involved, a standard external view of the ship will usually be fairly boring except during close-range combat, but it is possible to deploy telescopes and sensor networks that will allow close-up views of distant objects.  The majority of the time, players will be focused primarily on schematic displays instead, but these too are best implemented as 3D scenes due to the fundamentally three dimensional nature of space.</p>
+</section>
+
+<section id="interface">
+<h1>User Interface</h1>
+
+<p>Commanding a military starship is a challenging enough task on its own; a poor user interface could easily make it downright impossible.  In <i>Void Song</i>, the game UI is designed to make your job easier, not harder.  Each duty station is controlled via a panel that has a minimum aspect ratio of 8:10 &mdash; that is, slightly taller than it is wide.  This makes it easy to double up stations on the same display by placing them one beside the other.  For example, Ops and Comms could be doubled up to create a hybrid station that can perform the most important duties of each.  Most stations have double-width UIs with added information and convenience functionality for those players who are manning that station alone.  Additional informational displays can also be used as the second panel, which can be useful if there is no easily visible main viewscreen.</p>
+
+<p>Speaking of the main viewscreen, its primary use is for the tactical display maintained by Ops.  However, it is also possible for other stations to cast information onto the viewscreen, either as a secondary window or temporarily taking the place of the tactical display.  An example of this might be an external view of the ship provided by camera drones, or a close-in view of a far-off engagement obtained by extending the sensor grid.</p>
+
+<h2>The Tactical Display</h2>
+
+<div id="tac_slides">
+	<figure>
+		<img src="tac_frame1.png">
+		<figcaption>The heavy cruiser <i>Adelaide</i> jumps into the system.  An unknown vessel is immediately detected 22.8 light seconds away and assigned the identifier N01.  <i>Adelaide</i>'s jump pulse travels outwards at c.</figcaption>
+	</figure>
+	<figure style="opacity: 0">
+		<img src="tac_frame2.png">
+		<figcaption>22.8 seconds after <i>Adelaide</i> jumps in, its jump pulse intersects the last known location of N01.  Its marker flashes to indicate that it is now likely aware of <i>Adelaide</i>'s presence.</figcaption>
+	</figure>
+	<figure style="opacity: 0">
+		<img src="tac_frame3.png">
+		<figcaption>About 15 seconds later, a jump pulse is detected 6.2 light seconds away.  Sensors quickly identify it as N01.  N01's previous position is dimmed slightly to reinforce that it is out of date, but the jump away from that spot has not yet arrived at <i>Adelaide</i>'s current location, so it is left on the map in case N01 maneuvers before jumping.</figcaption>
+	</figure>
+	<figure style="opacity: 0">
+		<img src="tac_frame4.png">
+		<figcaption><i>Adelaide</i>'s sensors detect an EM pulse from N01 consistent with a high-gamma railgun discharge.  The tactical computer automatically declares N01 hostile and reassigns it as H01.  By this point, H01's jump pulse is already over five light seconds behind <i>Adelaide</i>, and there is not enough time for an emergency jump away.  The captain orders evasive acceleration and the crew braces for impact.</figcaption>
+	</figure>
+	<div id="slide_controls">
+	<script type="text/javascript">
+		function showTacSlide(num) {
+			var slides = document.querySelector('#tac_slides');
+			var figures = slides.querySelectorAll('figure');
+			for (var i = 0, n = figures.length; i < n; ++i) {
+				if (i == num - 1) {
+					var target = figures[i];
+					var hideOthers = function(e) {
+						for (var i = 0, n = figures.length; i < n; ++i) {
+							if (figures[i] != target) {
+								figures[i].style.opacity = '0';
+							}
+						}
+						target.removeEventListener('transitionend', hideOthers);
+					};
+					target.addEventListener('transitionend', hideOthers);
+					target.style.opacity = '1';
+				}
+			}
+		}
+	</script>
+	<a class="slide-control" href="javascript:void(0)" onclick="showTacSlide(1)">1</a>
+	<a class="slide-control" href="javascript:void(0)" onclick="showTacSlide(2)">2</a>
+	<a class="slide-control" href="javascript:void(0)" onclick="showTacSlide(3)">3</a>
+	<a class="slide-control" href="javascript:void(0)" onclick="showTacSlide(4)">4</a>
+	</div>
+</div>
+</section>
+
+<section id="technology">
+<h1>Technology</h1>
+
+<ul class="toc"></ul>
+
+<h2>The Jump Drive</h2>
+
+<p>Jump drives are perhaps most important piece of technology ever invented.  A jump drive allows a spacecraft to tunnel through higher-dimensional space from one location to another one.  Because the high-dimensional branes are tightly curled, this process is nearly instantaneous regardless of the distance involved.  The spacecraft never actually passes through any of the points in threespace between the origin and destination.</p>
+
+<p>A jump drive requires a great deal of power to function, and that power must be delivered at a sufficient sustained output level to permit the completion of the jump.  The amount of power required depends on the distance of the jump and the mass of the spacecraft, and most jump-capable ships are not capable of powering much more than the jump drive, life support, and the ship's computer when making a jump of any reasonable distance.  Some military vessels, however, have special battery banks which permit a low-power defensive screen to remain briefly in place during short-range jumps.</p>
+
+<p>Jump drives are not very precise.  A jump on a certain vector may overshoot or undershoot the intended destination by as much as 15%, and the actual destination may be five degrees or more off the intended vector.  This is inherent to the physics involved; the precise geometry of the high-dimensional space cannot be known in advance.  For this reason, it is extremely dangerous to jump in too close to any object, especially a planet, moon, or jump terminus.  The result of jumping on top of a significant amount of mass is quite spectacular, and would make an excellent weapon if it could be reliably reproduced.  It is important to note that the error of a jump is directly proportional to the distance, so short jumps can be made with much higher precision than long ones.</p>
+
+<p>Any power supplied to the jump drive in excess of what it requires to successfully complete the jump will serve to reduce the amount of time the drive takes to fully charge.  In theory there is no limit to this effect beyond the maximum output of the reactors, but in practice the limiting factor is the waste heat generated by the reactor cores.  In an emergency, putting the generators into overload can cut jump time down considerably, but the ship will be obliged to fully deploy radiators and discharge heat for minutes or even hours after the jump, and some damage to the ship's systems will be inevitable when the jump capacitors discharge and the draw on the circuit suddenly drops to nothing.</p>
+
+<p>The maximum range of a jump drive is usually measured in light minutes.  To travel further, it is necessary to use a jump terminus, which is a huge free-floating structure capable of jumping ships across interstellar distances.  While a jump terminus is far too massive to jump itself, the most powerful can propel large capital ships to entirely different star systems.  The expense of such enormous power throughput and capacity is such that jump termini are typically financed and maintained by whole star systems, and the technologies used must be kept calibrated to incredibly tight tolerances.  Anyone seen discharging high-gamma weapons within ten light seconds of a jump terminus, or nuclear weapons within one light minute, are to be hunted down and destroyed without negotiation or trial.  Threatening a jump terminus is one of the only known ways of allying the myriad autonomous organizations in any given part of the galaxy, but only as long as it takes to turn the offender into molten slag.</p>
+
+<p>Jump termini mitigate jump drift by using their immense power to open a stable microscopic "carrier" wormhole for roughly one picosecond, long enough to permit electromagnetic radiation through, then using a system of high-power terahertz transceivers to determine the location of the destination point and adjusting the main jump accordingly.  While theoretically this could be used to transmit information across superluminal distances without the need for a courier ship, one picosecond is only enough time for about two full wavelengths to propagate through the tunnel, and there is no way for the transceiver to detect the jump pulse of the carrier before it closes to synchronize its transmission.  The transceiver network does, however, act as a data storage and transmission system within its home system, with both clear and cryptographically secure communications uploaded and broadcast regularly by military and civilian vessels for later pickup and delivery by jump-equipped couriers.</p>
+
+<p>The inter-system jumps enabled by jump termini can result in extremely high relative velocities upon arrival depending on the distance between systems, the orbit of the jump terminus, and the location of the arrival point within the destination system.  To mitigate this, jump termini use extremely subtle modifications to the high-dimensional topology while in transit to introduce complex acceleration terms.  When projected back into threespace, these can change the vessel's momentum somewhat like a drag or thrust force, thereby allowing the terminus to match the ship's velocity to the local environment and prevent accidental collisions or unfortunate incidences of falling into the sun.  Ship-mounted jump drives typically lack this capability, though some high-end military jump drives can perform limited velocity changes.</p>
+
+<h2>Weapons</h2>
+
+<p>There are three loosely defined categories of weapons carried by spacefaring vessels.  The first are long-range high-gamma kinetic weapons.  These usually take the form of railguns that accelerate high-caliber slugs of iron or other ferromagnetic materials to significant fractions of c.  Their high velocity allow them to be used from long range while still denying the enemy the opportunity to invalidate the firing solution by changing their velocity vector or jumping away.  This requires both a great deal of power and a very long barrel, so these weapons are usually only found on large military capital ships such as cruisers, destroyers, and dreadnoughts.  The major drawback to these weapons is that they cannot be swivel-mounted, so aiming them requires maneuvering the entire ship.</p>
+
+<p>The second type of weapons frequently seen are low velocity, close-range kinetic impactors, colloquially known as "bullets".  While an individual bullet is only traveling a few tens of km/s and thus unlikely to cause significant damage, large ships are usually mounted with hundreds of cannon hardpoints.  Concentrated fire of this magnitude can buckle or punch through armor in a matter of seconds unless counteracted.  This obliges the vessel under attack to activate a defense screen, which imposes a significant power draw generally sufficient to prevent the victim from jumping away.  In addition, the waste heat generated by the defense screen can itself be lethal if the attacker is capable of keeping up the onslaught long enough.</p>
+
+<p>The third type of weapons are active warheads.  These usually take the form of explosive, chemical, or thermonuclear devices, and have a number of uses.  Conventional explosives are rarely seen in contemporary warfare, since the lack of atmosphere to carry a shock wave makes them useful mainly as a source of high-velocity shrapnel.  Chemical weapons, especially highly exothermic and corrosive chemical reactions, can be a serious threat to even a well-armored military vessel if applied to armor plating that is already compromised (e.g. by a high-gamma impactor attack).  Thermonuclear devices are used to disrupt external sensor meshes and other poorly-shielded electronics &mdash; often to deadly effect, as their electromagnetic pulse can be effective up to several light seconds.  At close range, nuclear warheads can radiatively heat or even vaporize hull plating, reducing its effectiveness against other types of weapons and increasing the likelihood of systems overheating.</p>
+
+<h2>Defense Screens</h2>
+
+<p>Defense screens are the first line of defense against low-velocity close range weapons.  Arrays of extremely high-power femtosecond lasers are fired at individual projectiles in flight, vaporizing them and altering their momentum to disperse the resulting superheated gasses away from the ship's hull.  This is an extremely effective defense against small kinetics such as bullets, but is much less effective against more massive warheads, which take many pulses to heat enough to disable, and can usually conduct away the heat from the impact point before enough lasers can be brought to bear.  Defense screens are entirely useless against high-gamma kinetics, since it would be impossible to significantly alter their momentum even if it were possible to target them.</p>
+
+<p>The effectiveness of a defense screen is limited by three factors: number of available lasers, power consumption, and tracking speed.  While the algorithms used by the targeting computer are optimized to distribute the load across as many lasers as possible, it is still possible to overwhelm a defense screen by simply throwing so much lead at it that no laser can physically charge fast enough to intercept a projectile while it is still sufficiently far away to deflect.</p>
+
+<p>More frequently, defense screens are defeated not because the rate of fire is too high, but because the laser banks consume too much power for the reactors to handle, or generate too much waste heat for the hull to radiate away, or both.  Deploying radiators requires exposing unarmored hull to the outside, not to mention the radiators themselves, and doing so during close-range combat is extremely dangerous.  The only other options in such a situation are to reduce either the charge applied to each laser or the frequency of the charge cycle.  Reducing the charge increases the likelihood that a projectile will not be fully vaporized by the burst, or that the high-velocity gas will impact the hull regardless.  Reducing the cycle frequency increases the likelihood that projectiles will slip through the screen.  Either way, it is likely that the ship's armor will begin to slowly take damage.</p>
+
+<p>Defense screens use adaptive optics to adjust the output angle of each emitter cavity rather than mechanical turrets, so their physical tracking speed is measured in nanoseconds.  However, the processing power required to compute a firing solution for each projectile is more complicated than it might otherwise seem: kinetic impactors are almost always ferromagnetic, and they have a sufficiently low mass that they undergo considerable deflection due to their target's magnetic field and gravitor leakage.  The magnetic flux across the hull of a ship can vary from second to second depending on a huge number of factors, so it takes some time to target the projectiles precisely enough to deflect them away from the center of mass of the vessel rather than simply hitting them head-on and turning them into a spray of mist with nearly equivalent momentum.  Small merchant vessels often use their navigation computer as a targeting computer as well, significantly reducing the number of cycles available to perform these calculations.  Even a military ship with a dedicated targeting computer can be overwhelmed by the amount of data, sometimes long before the charging cycle frequency would become a factor.</p>
+
+<h2>Thrusters</h2>
+
+<p>Despite the presence of jump drives, conventional impulsive thrusters are still vital components of a spacecraft.  This is for two reasons.  The first is that a jump drive does not meaningfully alter a ship's velocity, so a ship jumping into or out of a gravity well will find itself with a large residual velocity that it must counteract to avoid falling into the atmosphere or being flung away into space.  The second is that high-gamma kinetic impactors follow entirely ballistic trajectories after they are released, so with sufficiently high impulse, a vessel that becomes aware of an incoming impactor with some advance warning can accelerate out of the way using thrust.  Many small clippers and frigates rely upon their maneuverability and thrust, combined with a powerful sensor mesh, to reliably avoid long-range threats that would otherwise cripple them.</p>
+
+<p>The vast majority of impulsive thrusters used on modern spacefaring vessels are nuclear fusion rockets.  These are typically powered by the primary reactor cores, but some designs use dedicated reactors to decouple the thruster output from the ship's overall power output.</p>
+
+<p>Maneuvering thrusters are also very important, especially for capital ships mounted with rail guns.  A common tactic for defeating destroyers is to jump in close enough to observe the ship's orientation, then quickly alter course significantly off that axis (preferably 90&deg; or 180&deg; out depending on the presence or absence of aft railgun barrels) and jump again within one or two light seconds of the target.  If the second jump is small enough, the destination can be selected with sufficient precision such that your facing vector relative to the enemy is very small, and your railgun can be brought to bear much faster than the enemy can rotate to face you.  Success depends on the selection of the first position: if it is too far away, the second jump will not reliably place you in the proper location relative to the target, but if it is too close, your jump pulse will reach the target with enough time to spare for them to initiate a tactical jump themselves.</p>
+
+<h2>Armor</h2>
+
+<p>Regardless of the quality of a ship's defense screen or the skill of its crew, it is inevitable that a projectile will impact the hull.  This might be a slug from an enemy cannon, a stray micrometeoroid, a thermonuclear strike, or (if one is particularly unlucky) a high-gamma kinetic impactor.  Modern armor is designed to deflect or absorb the energy of these impacts and prevent damage to internal systems or breaches in the hull that might vent atmosphere or personnel into space.</p>
+
+<p>There are many types of armor, each of which is more effective at dealing with some attack scenarios than others.  Dense metallic armor is most effective against cannons and micrometeoroid impacts, since it is unlikely to shatter and can efficiently distribute the energy of the impact over a large continuous surface.  It also provides some defense against the electromagnetic disruption caused by a thermonuclear detonation, but its low specific heat makes it a poor choice for dealing with the heating that accompanies a close-range nuclear attack, and it is easily vaporized by sufficiently high-energy projectiles.  Ceramics have considerably better heat deflection and insulation properties, but are much more brittle.  Carbon fiber has high compressive strength, but a relatively low melting point, and so on.<p>
+
+<p>In practice, modern armor involves all of these materials and others, arranged in layers.  Critical areas of the ship are covered with thicker, heavier armor with sufficient layering to survive several focused attacks on the same point.  When bolstered by repair drones and highly compartmentalized interior spaces, this can allow heavily armored ships to remain wholly or largely operational for several minutes even without a functioning defense screen.</p>
+
+<p>A key point about armor is that its thermal insulation properties work in reverse as well.  A fully armored ship will quickly cook itself due to heat buildup.  For this reason, armored vessels have louvers or sliding panels in their armor that open to expose the inner hull and heat radiators when not in a combat situation to drastically improve the ship's rate of cooling.</p>
+
+<h2>Power &amp; Fuel</h2>
+
+<p>The formulation of the theory behind jump drive technology &mdash; and the massive but tantalizingly feasible amount of energy it was calculated to require &mdash; spurred a breathtaking increase in both the amount of electric power that can be generated and the rate at which it can be transmitted.  Since jump drives only consume power when active, jump-capable ships use their formidable generators to power a plethora of other power-hungry systems as well.  This includes defense screens, propulsion, gravitors, sensor arrays, communications equipment, and computers.</p>
+
+<p>Shipboard power is provided by a set of independent fusion reactors, each of which have many reactor cores.  The vast majority of the resulting thermal energy is converted immediately to electricity using high-efficiency generators.  This feeds into a number of accumulators of various types and capacities, but the maximum generator output far outstrips the ability of the accumulators to hold it.  As a result, it is possible (and in fact not uncommon) for a reactor to produce such high output that the ship's electrical system would be overwhelmed were it to be completely converted to electricity.  In this situation, two failsafe mechanisms may activate: the first is to increase the internal resistance of the power conduits, which reduces the output current but causes considerable resistive heating that is distributed throughout the ship's systems.  The second mechanism, which only activates in extreme overload situations, is to vent plasma from the reactor cores into space.  This drastically reduces the power output from that reactor, but may cause the reactor to shut down entirely and force a restart.</p>
+
+<p>Most reactors in use today rely primarily on deuterium, which is found in star-forming regions of space, and He-3, which is mined from Cronian gas giants.  Both are stored in a highly dense superfluid state until needed.  A typical vessel can easily store many years worth of fuel in this manner, so it is extremely for fuel availability to be a problem except in cases where a ship's existing fuel stores have lost containment.  Of course, a containment failure would cause the ship's entire quantity of fuel to flash-boil, resulting in local atmospheric pressures of several hundred megapascals and almost certain destruction of the ship, so finding intact vessels adrift due to fuel exhaustion is almost unheard of.</p>
+
+<h2>Heat</h2>
+
+<p>Heat is humanity's greatest enemy in space.  Thermal control systems are often some of the most complex systems on board a spacecraft, and are undoubtedly among the most important.  While it is technically possible for systems to fail due to cold, by far the more frequent problem is the buildup of waste heat from the ship's computers, electrical systems, weapons and propulsion, and external heat fluxes.  Because the only available mechanism for heat transfer is radiation, getting rid of the waste heat produced by a large vessel can be a challenge in the best of conditions.  Spacecraft use a number of active and passive thermal control mechanisms to reject heat, including thermal insulation, high-albedo hull coatings, and liquid coolant.</p>
+
+<p>Although these systems are adequate for routine operation, there are many situations in which they cannot cope for long.  These include long periods spent near a star and extended operation at peak reactor output, but the most dangerous scenario is prolonged short-range combat.  Mere minutes of operating a large vessel's cannons or defense screen, combined with the increased generator output, frequent use of fusion thrusters for evasive maneuvers, and extra targeting and navigation computer cycles that go along with it, can cause damaging amounts of heat to build up across the entire ship.  This can easily disable a vessel's offensive or defensive capabilities, or at worst can cause reactor containment failure.</p>
+
+<p>To prevent this, most large spacecraft employ active heat radiators that concentrate waste heat and radiate it into space.  These typically take two forms, both of which are seen together on most vessels.  The first involves a set of fixed radiators located just beneath the armor of the outer hull, which can be exposed to space using louvers in the armor plating.  These provide some benefit even when the louvers are closed, but can only be used to their full effect when they are opened.  The second are radiator fins that fold out from cavities beneath the outer hull and extend anywhere from tens to thousands of meters away from the hull.  When both of these systems are deployed and waste heat is diverted to them (typically using coolant fluid), truly massive amounts of heat can be dumped in very little time.</p>
+
+<p>Since deploying radiators requires opening gaps in the outer hull, it is considered extremely risky to deploy radiators in a combat situation.  Radiator fins, in particular, are extremely vulnerable to enemy fire, and their destruction will more or less permanently disable a ship's thermal control capability.  Since a radiator's function is significantly impaired by layers of shielding between it and the systems it is cooling, an EMP burst while radiators are deployed can be devastatingly effective.  It is therefore advised that military vessels only deploy radiators when they are reasonably secure from attack.</p>
+
+<h2>Gravity</h2>
+
+<p>The prolonged effects of microgravity on the human body have been known since the early 21st century.  Bone loss, muscle atrophy, and diminished cardiac function are all but inevitable.  Early spacecraft used rotation to counteract this, but this ultimately proved impractical due to the difficulty inherent in rotating only part of a large vessel.</p>
+
+<p>Thankfully, the construction of a viable theory of quantum gravity opened up the possibility of generating true gravitational acceleration instead of simulating it via other forces.  Modern vessels typically use a tight planar grid of fairly weak gravitors running along the centerline of the vessel, usually through the longer horizontal axis.  Points closer to the dorsal or ventral hulls experience a gravitational pull towards the centerline of the vessel, and points arranged parallel to the gravitor plane experience a pull in the same "downward" direction as one another, permitting decks to be stacked linearly one on top of the other.  In practice, the gravitor grid does not extend all the way to the outer hull in order to minimize leakage, so the extreme few meters of each deck do experience some pull towards the center.  Some vessels build decks that curve to remain perpendicular to the normal vector, but most simply use these areas for storage.</p>
+
+<p>A much more pressing issue related to gravitors is falloff rate.  Try as they might, engineers have never managed to build a gravitor whose acceleration falls off at anything more or less than the square of the distance.  This has left spacecraft designers with only three options: weak gravitor fields that experience significant gravitational variability between decks, more powerful gravitor fields that experience less variability but have exclusion zones near the centerline where the acceleration is hazardously high, or multiple gravitor decks with inconvenient and disorienting dead zones and directional reversals in between each.  In practice, all three of these solutions are used by someone somewhere, but most large ships use stronger gravitors and simply keep each half of the vessel as independent as possible to avoid the inconvenience associated with crossing the gravitor grid.  What connections do exist are located as far from adjacent gravitors as possible so as not to subject crew to high g-forces.</p>
+
+<p>One consequence of strong gravitors is gravity leakage.  The gravitational acceleration does not stop at the outer hull, and continues a good distance (technically an infinite one) into space on all sides of the vessel.  Gravity leakage effectively extends the targetable volume of the ship on all sides by an amount dependent on the velocity of the incoming projectile.  For high-gamma weapons it is of course negligible, but low-velocity kinetics effectively can fall into the ship even if they might have otherwise missed.  It is generally agreed upon, however, that the deleterious effect on crew performance caused by powering down the gravitors offsets the risk of leaving them engaged during combat.</p>
+
+<p>While many attempts have been made at using gravitors as a form of propulsion, a quick thought experiment will show that simply sticking a gravitor on the end of a pole will not cause a net acceleration of the system, any more than placing a large mass on the end of a stick in a planet's gravity well would do.  Some proposals have been made to use jump termini as gravitational slingshots, but opponents of these efforts note that small moons are just as effective, easier to come by, and slightly cheaper.</p>
+
+<h2>Drones</h2>
+
+<p>Any vessel larger than a courier is typically surrounded by a cloud of tiny unmanned autonomous vehicles colloquially called drones.  These drones serve many purposes.  Sensor drones form a network around the ship not unlike a distributed radio telescope, greatly enhancing its effective range and allowing it to discern details at a distance.  Repair drones skim over the hull of the ship, looking for damage and weakened armor and deploying sealants and molecular scaffolding.  Security drones maintain a perimeter around the ship to detect foreign objects (such as boarding pods or spy drones) and provide exterior views of the ship to damage control, security, and operations teams.</p>
+
+<p>Drones are designed to be as small and light as possible, often less than ten centimeters across and a handful of grams in mass.  For propulsion, drones stationed near a ship's hull use electromagnets to pull themselves along the magnetic field lines of their parent ship, whereas free-ranging drones rely primarily on quantum vacuum plasma thrusters with a small supply of highly compressed hypergolic propellant for high delta-v maneuvers.</p>
+
+<p>Drones are typically cheap and easy to mass-produce, so the occasional loss of a few drones to malfunction or an emergency jump is not a cause for concern.  Drones are almost never armored or magnetically shielded, however, so a surprise close-range attack or a nuclear EMP strike while drones are deployed can instantly wipe out the majority of a ship's sensor and repair capabilities and leave it vulnerable to boarding parties.  For this reason, it is wise to recall as many drones as can be spared before entering a close-range combat situation.</p>
+
+<p>Some particular inventive commanders have attempted in the past to make use of drones in an offensive capacity, relying on their small size and diminutive heat signature to sneak them past an enemy's external security net.  While some successes have been reported, in particular an incident in which a single drone was able to compromise the security of the enemy's wireless information network and transmit classified information before being detected and destroyed, the majority of such attempts have been foiled by security drones and a subsequent hail of bullets.</p>
+
+<h2>Sensors</h2>
+
+<p>The immense distances involved in space travel put active sensors such as radar or lidar at an extreme disadvantage, since the sensor pulse must propagate away from the ship, reflect off the target, and then travel back to the ship.  By contrast, passive sensors use sunlight, starlight, blackbody radiation, and various other ambient forms of radiation which are already present in the environment.  The consequence of this is that most sensors operate using the same principles as telescopes, particularly radio telescopes.  When it comes to telescopes, larger is generally better, and so larger ships have an inherent advantage when it comes to detecting other vessels since they can mount receivers further apart.  Small ships are harder to detect, however, demonstrating one of the advantages of a heterogeneous fleet.</p>
+
+<p>The sensing capabilities of both large and small vessels can be dramatically increased via the use of a swarm of sensor drones.  These drones can form a cloud many kilometers across, communicating with one another and with their host ship to assemble a much more detailed picture of distant events.  A single EMP can completely disable a drone swarm, however, making their use very risky in situations where the element of surprise has been lost.</p>
+
+<p>The combination of extremely powerful sensors and a jump drive offers a unique tactical capability: it is possible to jump to the edge of an event's light cone and observe it in considerable detail even if it occurred minutes or hours in the past.  This can be used to look for jump pulses that might reveal the presence of a now-hiding enemy, or to jump away from a battle and study the enemy's tactics from relative safety.</p>
+
+<h2>Boarding</h2>
+
+<p>With the exception of fuel containment loss or cascading reactor overload, there are not many things that can completely destroy a capital ship.  Much more often, a catastrophic failure of the ship's electrical systems due to a power surge or overheating will destroy the vessel's ability to fight or flee, while leaving it mosly physically intact.  In other cases, extreme overheating or widespread hull integrity failure will kill or incapacitate some or all of the ship's crew while leaving it otherwise serviceable.  In all such cases, it can be highly advantageous to board the stricken vessel to obtain resources, prisoners, or control of the ship itself.  Boarding an operational vessel can also be an effective way of removing its ability to make war without crippling or destroying it, either by taking the ship through force or arms or by sabotaging its computer network.</p>
+
+<p>Regardless of the circumstances of the boarding, the tools are the same: boarding pods and naval infantry.  A boarding pod is a small, typically unarmed and sometimes unpowered spacecraft which can be ejected from its parent vessel and travel to its destination either in powered flight or on a ballistic trajectory, then dock with, attach to, or penetrate the other ship to gain access.  Boarding pods are designed to be small and stealthy in order to avoid detection by an enemy defense screen and minimize the likelihood of incidental destruction by cannon fire.  Upon arrival, they may take advantage of gravitor leakage or use cold welding to attach themselves to the ship's hull, or may attempt to use a hull breach or one of the enemy's docking ports or landing bays to bypass the armor altogether.  Pods are usually equipped with various means of cutting, drilling, burning, corroding, or otherwise compromising various types of armor to gain access to the ship's interior and disgorge their cargo of ground troops.</p>
+
+<p>Once access to the ship interior has been gained, the task of the naval infantry is to neutralize resistance and gain control of the ship and its assets.  Sometimes this is straightforward, such as when most or all of the crew is already dead, but in other cases a prolonged firefight may take place before the boarders succeed or are repelled.  When boarding an operational hostile vessel, it is considered tactically wise to dispatch multiple coordinated boarding parties to multiple points on the ship to better divide and overwhelm the defenders.</p>
+
+<p>In cases where taking the ship by force is infeasible, a boarding party may instead elect to attempt to compromise the enemy's intermal network to disable key systems such as power and internal communications.  A particularly effective tactic is to simulate widespread damage to the inner hull, causing the computer system to automatically seal off individual sections of the ship, then immediately cut power to prevent the blast doors from being reopened.</p>
+
+<p>Once the initial boarding has been successful and the ship's crew has been neutralized, repair crews can be dispatched to make the ship operational again if necessary.  If the ship is too badly damaged to repair in the amount of time available, the ship can be stripped of valuable resources such as ammunition, drones, and spare parts.  Otherwise, a skeleton crew can take command of the vessel or its computer systems can be slaved to that of another ship in order to tow it somewhere else.</p>
+
+</section>
+
+<section id="stations">
+<h1>Stations</h1>
+
+<h2>Commanding Officer/Officer of the Deck</h2>
+
+<p>The Commanding Officer (CO) is the person responsible for the completion of mission objectives and the well-being of the ship.  The Commanding Officer holds a rank of Commander or higher, and is almost always the highest ranking member of the crew.  When the CO is off duty or required elsewhere, her duties are delegated to a junior officer, who is referred to as the Officer of the Deck (OOD).</p>
+
+<p>The CO or OOD is responsible for coordinating the efforts of everyone in the CIC to ensure the successful completion of mission objectives.  Put more plainly, their job is to give orders, make decisions, and take the blame when everything goes wrong.  A good CO or OOD will avoid micromanaging, letting the other officers do their jobs as efficiently as possible and focusing instead on making strategic decisions and getting everybody the information they need.</p>
+
+<h2>Executive Officer</h2>
+
+<p>The Executive Officer (XO) is the second in command, reporting only to the CO.  When an Officer of the Deck is assigned, they technically report to the XO, though it is rare for an XO to override an OOD's orders.  The XO's job is to ensure that the routine operation of the ship is not disrupted.  This includes determining the duty roster for junior officers and non-commissioned officers (NCOs) within each department, assigning and giving orders to shore parties and boarding parties, dispatching naval infantry to repel boarders, and declaring and standing down from General Quarters in emergency situations.  The XO also performs an unofficial second duty of being a second pair of trained eyes on the strategic situation, and a good CO or OOD will make ample use of this.</p>
+
+<p>The XO is to a ship's crew what the engineer is to the ship's hardware.  An XO who knows her crew's strengths and weaknesses can ensure that everyone is in the right place at the right time for maximum efficiency, drastically increasing the ability of each department to respond to an emergency quickly and correctly.  This often involves knowing who works well together, who is performing at a higher or lower level than their current rank or station would suggest, who excels at a particular task and who does not, and who is likely to be exhausted or burned out based on the current duty rotation.  As the commander of all naval infantry on board, the XO also issues direct orders to shore parties and boarding parties while they are in the field, and must work with the Communications Officer and Navigation to ensure that contact is not lost and the party can be recalled when their mission is completed.</p>
+
+<h2>Communications Officer</h2>
+
+<p>The Communications Officer (often abbreviated "Comms") is responsible for assessing, interpreting, and controlling all electromagnetic signals in the vicinity of the ship.  While this includes routine "in the clear" transmissions, the Comms Officer's job is much larger and more important than simply relaying messages to the CO.  Most of a Comms Officer's tasks fall more properly into the domain of signals intelligence: intercepting and decrypting secure communications of the enemy, detecting stealthed vessels in the vicinity, compromising the networks of enemy vessels and drones, maintaining the integrity of the ship and its own drone perimeter against network penetration attacks, jamming enemy radio transmissions (and preventing such jamming of friendly transmissions), and determining the position of enemy transceivers and repeaters.</p>
+
+<h2>Navigation</h2>
+
+<p>The Navigation Officer (sometimes called the Conning Officer or "Conn") is in charge of the jump drive.  While her most obvious duty is to plot and execute jumps, the Navigation Officer also has an important role to play in assuring the security of the ship by executing regular short-range tactical jumps while the ship is keeping station.  This prevents the EM signature of the ship from propagating too far from the ship's position, information which could be used to the enemy's advantage in a sneak attack.</p>
+
+<p>The Navigation Officer also controls the ship's impulsive thrusters, which are used for course changes and evasive accelerations, and is responsible for docking maneuvers, and for aligning with and operating jump termini.</p>
+
+<h2>Operations</h2>
+
+<p>It is often said that Operations is the most important duty station in the CIC.  The fact that this is usually said by Operations Officers should not diminish its significance.  Ops, as it is sometimes called, is responsible for the tactical awareness of the ship.  An Operations Officer must take all the information made available by Comms, Navigation, and the ship's sensors, and construct from it an accurate and timely picture of the environment around the ship, including all vessels and other objects present there (which is an especially difficult task given that some of these object may be several light minutes away).  Because the tactical situation may change instantaneously at any moment, Ops must always be paying close attention to the tactical display and updating it to reflect complexities not automatically detected by sensors, like whether a distant contact likely has hostile intent.  Additionally, the Operations Officer controls the ship's sensor network, and can use it to focus in on individual targets to obtain additional information and witness events that transpired before the ship arrived to see them.</p>
+
+<h2>Weapons</h2>
+
+<p>Loading and discharging of munitions, calculating firing solutions and targeting enemy ships, managing the defense screen, coordinating close-range cannon barrages.</p>
+
+<h2>Engineering</h2>
+
+<p>The Chief Engineer is responsible for keeping the ship's systems in working order.  This seems like a simple task if you fail to consider that you are in space and being shot at.  The Chief Engineer's primary tasks are the control of power output levels from the reactors and generators, and the management and safe disposal of waste heat from the reactor cores and ship's systems.  Additionally, the engineer manages and dispatches repair crews when necessary for upkeep or emergency maintenance of ship's systems, and is responsible for deploying, recalling, and maintaining the ship's drone swarm.</p>
+
+<p>The complexity of the engineer's job is that more power is always better in a combat situation, but more power also results in more heat production, which will cause systems to fail if allowed to build up unchecked.  Efficiently cooling the ship requires that it disengage from combat, so heat capacity is a non-renewable resource that must be managed very carefully.  Determining when and how much to raise or lower power generation is something of an art, and one that experienced engineers have become very adept at.</p>
+
+</section>
+
+<section id="world">
+<h1>The World</h1>
+
+<h2>Government</h2>
+
+<p>While there are many independent worlds, colonies, and federations of systems in the galaxy (and even a few indepedent nation-states on otherwise unified worlds), the largest and most powerful government in the galaxy is the Systems Union.</p>
+
+<p>The Union uses a multilayer democratic-republic model: each individual system is governed more or less democratically using internet polling, but the effective bandwith limitations of the jump terminus system preclude galactic direct democracy, so each system elects a council which collectively represents that system in matters that affect the Union as a whole.  For any given bill that comes before the Great Parliament, a local poll is first taken.  Depending on the outcome of the poll, anywhere from one to three councilors are chosen to represent the system on that bill.  The number of councilors chosen depends on the vote distribution; if there is a clear mandate within the system for a given point of view, the councilor whose position best matches the public's will be chosen.  If the bill is contentious, the councilors best aligned with the two or three most common viewpoints are all summoned together.</p>
+
+<p>This pattern is repeated at the Union level: the bill is discussed and broken down into individual decision points on which all councilors are polled, with the weight assigned to the vote of each councilor decided by a complex system of checks and balances carefully calibrated to keep everyone more or less equally annoyed.  Depending on the distribution of the votes, one to twelve legislators from a large pool are chosen to codify the decision.  These legislators examine the outcome of the votes and formalize them into an algorithm which can, at least in theory, be applied unambiguously to any situation that might arise without the need for post hoc judicial proceedings to determine applicability or intent.  Once the law has been formalized, the council has the opportunity to accept or reject it.  If it is rejected, new votes are taken, a new set of legislators is summoned, and the process is started over.  This process can take weeks, but the existence of a completely separate council for each bill ensures that most sessions are conculded within a few days.</p>
+
+<p>Once a bill has become law, it is added to either the Greater or Lesser Codes of Law.  The Greater Code contains laws that supercede the decisions of individual systems, such as taxation for the purposes of jump terminus maintenance and the Union military, as well as basic provisions for due process, civil rights, acceptable statistical polling practices, the separation of corporation and state, and so on.  The Lesser Code contains laws which individual systems are free to override by passing their own local laws.</p>
+</section>
+
+<section id="story">
+<h1>Story</h1>
+
+<blockquote>
+<p>In the year 106 of the Union Calendar, the principal anchorage of the Systems Union Navy's Sagittarius Fleet, orbiting the moon of Alohan in the far-flung Bolgata system, came under sudden and devastating attack.  The attacking fleet, which numbered in the hundreds of vessels including several dreadnoughts, obliterated the anchorage and most of the ships stationed there in a matter of seconds, before they could even spin up their jump drives to escape.  Those few that got under way were destroyed before they could reach the safety of the jump terminus.  In the midst of the chaos, the reason for the complete surprise of the attack became clear: the attackers were Union vessels, with Union captains and Union crews.</p>
+
+<p>With it becoming grimly apparent to the defending forces that the battle had been lost before it started, Rear Admiral Ali issued an order to all surviving ships: the priority now was to ensure that at least one ship made it to the jump terminus to inform the rest of the galaxy of the betrayal, regardless of losses incurred in the process.  As ship after ship was turned into glowing scrap by close-range high-velocity strikes from the vastly greater numbers of the enemy, even this objective seemed lost.  By the time the battle ended, all friendly vessels in the system had been destroyed or disabled.</p>
+
+<p>All save one.</p>
+
+<p>As luck would have it, a routine training exercise placed an individual warship a few light minutes away from Alohan.  When the anchorage came under attack, quick thinking on the crew's part allowed them to jump away from the carnage.  Through a combination of stealth, surprise, and firepower, this sole survivor managed to penetrate the exclusion zone around the jump terminus and escape the system.  Thus began a long, perilous journey through newly occupied systems, and a search for sanctuary, allies, and survivors.</p>
+</blockquote>
+<hr>
+<p>The story of <i>Void Song</i> begins with a training scenario, designed to teach basic gameplay.  This quickly turns into a very real combat exercise as the system is invaded by an overwhelmingly outnumbering enemy force.  The crew must learn quickly to stay alive long enough to reach the safety of the jump terminus and escape the system with their new orders: raise the alarm.</p>
+
+<p>Upon jumping into the nearest inhabited system, the crew discovers that the invaders have occupied every world in their path and established a blockade to intercept or destroy courier ships or drones that might attempt to get word out.  Liberating these systems would offer a chance to resupply, repair, and weaken the forces of the enemy, but might also result in damage, destruction, and death.</p>
+
+<p>As the game progresses, the crew can build up their own fleet by capturing or turning enemy ships, or by finding allies with access to military tech on newly liberated worlds.  The ultimate goal of the story is to break through enemy lines, rendezvous with the remaining forces loyal to the Union, and learn the extent and nature of the events that have occurred throughout the galaxy.  Once this is accomplished, the galaxy opens up and allows for unlimited free play as the crew are assigned to various fronts in the newly declared civil war.</p>
+
+<p>While it is recommended for new crews to play through the story from the beginning, free play can be selected immediately for a less structured experience.  This is especially useful for crews that don't intend to meet regularly.</p>
+</section>
+</main>
+
+<script type="text/javascript">
+	educateQuotes();
+	setupSections();
+	setupTablesOfContents();
+	showSection('about');
+</script>
+
+</body>
+</html>
