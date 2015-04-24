@@ -156,18 +156,29 @@
 	[hidden] {
 		display: none;
 	}
-	
+
 	@media only screen and (max-device-width: 480px) {
 		nav ul {
 			padding: 0 1em;
 		}
 		nav ul > * {
-			margin-right: 1em;	
+			margin-right: 1em;
 		}
 		nav li:last-of-type {
 			padding-left: 1em;
 		}
 	}
+
+	/* IE-only styles.  >:( */
+	@media screen and (min-width:0\0) {
+		main {
+			margin-left: 32px;
+		}
+    	section {
+    		min-width: 800px;
+    	}
+	}
+
 	</style>
 
 	<script type="text/javascript">
