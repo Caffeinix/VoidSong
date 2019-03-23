@@ -1,0 +1,13 @@
+{
+    "files.exclude": {
+        "**/*.js": {
+            "when": "$(basename).ts"
+        },
+        "**/*.js.map": true
+    },
+    "typescript.tsdk": "/usr/local/lib/node_modules/typescript/lib",
+    "editor.tabSize": 2,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true
+    }
+}

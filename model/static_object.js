@@ -1,0 +1,1 @@
+//# sourceMappingURL=static_object.js.map

@@ -1,0 +1,38 @@
+body {
+  background-color: #202124;
+  color: white;
+}
+
+#debug {
+  position: absolute;
+  width: 400px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+  pointer-events: none;
+}
+
+#debugView > h1 {
+  font-size: 1rem;
+  font-family: monospace;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+#debugView > section {
+  white-space: pre-wrap;
+  font-family: monospace;
+}
+
+#tactical {
+  background-color: #000;
+  display: block;
+  margin-bottom: 1em;
+}
+
+.graph {
+  border: 1px solid #404450;
+  border-radius: 4px;
+}

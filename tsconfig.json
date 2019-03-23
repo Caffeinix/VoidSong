@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "esnext",
+    "module": "esnext",
+    "strictNullChecks": true,
+    "plugins": [
+      {
+        "name": "typescript-tslint-plugin",
+      }
+    ]
+  }
+}
