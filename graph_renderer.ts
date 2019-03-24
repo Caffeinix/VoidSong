@@ -1,9 +1,9 @@
-import { Clock } from '../clock.js';
-import { DeepReadonly } from '../deep_readonly.js';
-import { Ship } from '../model/ship.js';
-import { World } from '../model/world.js';
-import { ShipComputer } from '../ship_computer.js';
-import { DebugView } from './debug_view.js';
+import { Clock } from './clock.js';
+import { DeepReadonly } from './deep_readonly.js';
+import { Ship } from './model/ship.js';
+import { World } from './model/world.js';
+import { DebugView } from './operations/debug_view.js';
+import { ShipComputer } from './ship_computer.js';
 
 export class GraphRenderer {
   public duration: number = 30.0;

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     "sourceMap": true,
     "target": "esnext",
     "module": "esnext",

@@ -1,7 +1,7 @@
 import { Clock } from './clock.js';
 import { LIGHT_SECOND_IN_WORLD_UNITS, METER_IN_WORLD_UNITS, SECTOR_SIZE_IN_WORLD_UNITS, } from './constants.js';
 import { getNextContactId } from './contact_id.js';
-import { GraphRenderer } from './operations/graph_renderer.js';
+import { GraphRenderer } from './graph_renderer.js';
 import { Positions } from './operations/positions.js';
 import { Physics } from './physics.js';
 import { Renderer } from './renderer.js';
