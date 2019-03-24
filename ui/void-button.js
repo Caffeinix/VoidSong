@@ -7,6 +7,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { css, customElement, html } from './custom_element.js';
 let VoidButton = class VoidButton extends HTMLElement {
     connectedCallback() {
+        this.addEventListener('click', this.activate.bind(this));
+        this.addEventListener('keydown', this.handleKey.bind(this));
+    }
+    handleKey(event) {
+        if (event.key === 'Space') {
+            this.activate();
+            event.stopPropagation();
+        }
+    }
+    activate() {
+        this.dispatchEvent(new CustomEvent('activate', {
+            bubbles: true,
+            composed: true,
+        }));
     }
 };
 VoidButton = __decorate([
@@ -18,6 +32,7 @@ VoidButton = __decorate([
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
+    color: #8AF;
     background: #101012;
     border: 1px solid #8AF;
     padding: 0 4px;
@@ -27,11 +42,27 @@ VoidButton = __decorate([
     min-width: 96px;
     box-sizing: border-box;
     cursor: default;
+    user-select: none;
+    transition: color 0.05s ease, background-color 0.05s ease, border-color 0.05s ease;
+  }
+
+  :host(:focus) {
+    border-width: 2px;
+  }
+
+  :host(:hover) {
+    color: #ACF;
+    border-color: #ACF;
+  }
+
+  :host(:active) {
+    color: #FFF;
+    border-color: #FFF;
+    background-color: #202124;
   }
 
   slot {
-    color: #8AF;
-    font: 13px 'Saira Condensed', sans-serif;
+    font: 12px 'Saira Condensed', sans-serif;
     font-weight: 400;
   }`,
         template: html `

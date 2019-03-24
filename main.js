@@ -241,7 +241,7 @@ window.addEventListener('load', () => {
     runGameLoop();
 });
 const plotJumpButton = document.getElementById('plotJumpButton');
-plotJumpButton.addEventListener('click', (event) => {
+plotJumpButton.addEventListener('activate', (event) => {
     computer.selectingJumpTarget = true;
 });
 //# sourceMappingURL=main.js.map

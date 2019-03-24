@@ -259,7 +259,7 @@ window.addEventListener('load', () => {
   runGameLoop();
 });
 
-const plotJumpButton = document.getElementById('plotJumpButton') as HTMLButtonElement;
-plotJumpButton.addEventListener('click', (event) => {
+const plotJumpButton = document.getElementById('plotJumpButton') as HTMLElement;
+plotJumpButton.addEventListener('activate', (event) => {
   computer.selectingJumpTarget = true;
 });
