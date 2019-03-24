@@ -11,7 +11,7 @@ import { css, customElement, html } from './custom_element.js';
     color: #8AF;
     background: #101012;
     border: 1px solid #8AF;
-    padding: 0 4px;
+    padding: 1px 5px;
     border-top-left-radius: 6px;
     border-bottom-right-radius: 6px;
     min-height: 32px;
@@ -23,7 +23,9 @@ import { css, customElement, html } from './custom_element.js';
   }
 
   :host(:focus) {
+    outline: none;
     border-width: 2px;
+    padding: 0 4px;
   }
 
   :host(:hover) {
@@ -47,12 +49,13 @@ import { css, customElement, html } from './custom_element.js';
 })
 class VoidButton extends HTMLElement {
   public connectedCallback() {
+    this.tabIndex = 0;
     this.addEventListener('click', this.activate.bind(this));
     this.addEventListener('keydown', this.handleKey.bind(this));
   }
 
   private handleKey(event: KeyboardEvent) {
-    if (event.key === 'Space') {
+    if (event.key === ' ') {
       this.activate();
       event.stopPropagation();
     }

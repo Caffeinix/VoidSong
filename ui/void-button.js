@@ -7,11 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { css, customElement, html } from './custom_element.js';
 let VoidButton = class VoidButton extends HTMLElement {
     connectedCallback() {
+        this.tabIndex = 0;
         this.addEventListener('click', this.activate.bind(this));
         this.addEventListener('keydown', this.handleKey.bind(this));
     }
     handleKey(event) {
-        if (event.key === 'Space') {
+        if (event.key === ' ') {
             this.activate();
             event.stopPropagation();
         }
@@ -35,7 +36,7 @@ VoidButton = __decorate([
     color: #8AF;
     background: #101012;
     border: 1px solid #8AF;
-    padding: 0 4px;
+    padding: 1px 5px;
     border-top-left-radius: 6px;
     border-bottom-right-radius: 6px;
     min-height: 32px;
@@ -47,7 +48,9 @@ VoidButton = __decorate([
   }
 
   :host(:focus) {
+    outline: none;
     border-width: 2px;
+    padding: 0 4px;
   }
 
   :host(:hover) {
