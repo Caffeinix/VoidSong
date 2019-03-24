@@ -1,3 +1,4 @@
+import { DebugView } from './operations/debug_view.js';
 import { Snapshot } from './snapshot.js';
 export class SnapshotManager {
     constructor() {
@@ -20,6 +21,8 @@ export class SnapshotManager {
         else {
             this._snapshots.set(contactId, [snapshot]);
         }
+        DebugView.getView('snapshots').textContent =
+            `${Array.from(this._snapshots.entries()).map(([key, value]) => value.length)}`;
     }
     getContactIds() {
         return this._snapshots.keys();

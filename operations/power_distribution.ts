@@ -1,13 +1,13 @@
 import { Clock } from '../clock.js';
 import { DeepReadonlyObject } from '../deep_readonly.js';
-import { integrateWithConstantAcceleration, rateOfChangeAtTime } from '../math.js';
+import { integrateWithConstantAcceleration } from '../math.js';
 import { Battery, PoweredSystem, PowerSource, Ship, System } from '../model/ship.js';
 import { ShipComputer } from '../ship_computer.js';
 import { SnapshotManager } from '../snapshot_manager.js';
-import { DebugView } from './debug_view.js';
 import { Ships } from './ships.js';
 
 const EPSILON = 0.016667;  // Approximately one frame.
+const POWER_TOLERANCE = 0.00001;
 
 interface DistributedEnergy {
   availableEnergyFromReactor: number;
@@ -47,7 +47,7 @@ export class PowerDistribution {
 
     // TODO: move this to batteries.ts?
     const powerInput = ship.systems.battery.powerInput;
-    if (powerInput >= ship.systems.battery.maxPowerInput) {
+    if (powerInput >= ship.systems.battery.maxPowerInput + POWER_TOLERANCE) {
       const newShip = Ships.clone(ship);
       newShip.systems.battery.powerInput = ship.systems.battery.maxPowerInput;
       snapshots.addSnapshotForShip(newShip, clock);

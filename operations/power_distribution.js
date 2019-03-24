@@ -1,6 +1,7 @@
 import { integrateWithConstantAcceleration } from '../math.js';
 import { Ships } from './ships.js';
 const EPSILON = 0.016667; // Approximately one frame.
+const POWER_TOLERANCE = 0.00001;
 export class PowerDistribution {
     static update(ship, clock, snapshots, computer) {
         if (!ship.systems.reactor.enabled) {
@@ -23,7 +24,7 @@ export class PowerDistribution {
         }
         // TODO: move this to batteries.ts?
         const powerInput = ship.systems.battery.powerInput;
-        if (powerInput >= ship.systems.battery.maxPowerInput) {
+        if (powerInput >= ship.systems.battery.maxPowerInput + POWER_TOLERANCE) {
             const newShip = Ships.clone(ship);
             newShip.systems.battery.powerInput = ship.systems.battery.maxPowerInput;
             snapshots.addSnapshotForShip(newShip, clock);

@@ -1,6 +1,7 @@
 import { Clock, Timestamp } from './clock.js';
 import { ContactId } from './contact_id.js';
 import { Ship } from './model/ship.js';
+import { DebugView } from './operations/debug_view.js';
 import { Snapshot } from './snapshot.js';
 
 export class SnapshotManager {
@@ -22,6 +23,9 @@ export class SnapshotManager {
     } else {
       this._snapshots.set(contactId, [snapshot]);
     }
+
+    DebugView.getView('snapshots').textContent =
+      `${Array.from(this._snapshots.entries()).map(([key, value]) => value.length)}`;
   }
 
   public getContactIds(): IterableIterator<ContactId> {
