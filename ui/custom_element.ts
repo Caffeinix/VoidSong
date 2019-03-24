@@ -5,19 +5,23 @@ interface CustomElementConfig {
   useShadow?: boolean;
 }
 
-export function html(raw) {
-  return raw;
+function taggedTemplateNoop(strings: TemplateStringsArray, ...keys: string[]) {
+  const lastIndex = strings.length - 1;
+  return strings
+    .slice(0, lastIndex)
+    .reduce((p, s, i) => p + s + keys[i], '')
+    + strings[lastIndex];
 }
 
-export function css(raw) {
-  return raw;
-}
+export const html = taggedTemplateNoop;
+
+export const css = taggedTemplateNoop;
 
 export function customElement(config: CustomElementConfig): ClassDecorator {
   return (cls) => {
     if (config.selector.indexOf('-') <= 0) {
       throw new Error('Custom element names must contain at least one dash');
-  }
+    }
     if (!config.template) {
       throw new Error('You need to pass a template for the element');
     }
@@ -26,7 +30,7 @@ export function customElement(config: CustomElementConfig): ClassDecorator {
       config.template = `<style>${config.style}</style> ${config.template}`;
     }
     template.innerHTML = config.template;
-    const nullFunction = () => {};
+    const nullFunction = () => { };
     const connectedCallback = cls.prototype.connectedCallback || nullFunction;
     cls.prototype.connectedCallback = function() {
       const clone = document.importNode(template.content, true);

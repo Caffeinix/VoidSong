@@ -1,9 +1,12 @@
-export function html(raw) {
-    return raw;
+function taggedTemplateNoop(strings, ...keys) {
+    const lastIndex = strings.length - 1;
+    return strings
+        .slice(0, lastIndex)
+        .reduce((p, s, i) => p + s + keys[i], '')
+        + strings[lastIndex];
 }
-export function css(raw) {
-    return raw;
-}
+export const html = taggedTemplateNoop;
+export const css = taggedTemplateNoop;
 export function customElement(config) {
     return (cls) => {
         if (config.selector.indexOf('-') <= 0) {
