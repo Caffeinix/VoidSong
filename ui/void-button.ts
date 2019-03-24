@@ -27,7 +27,6 @@ import { css, customElement, html } from './custom_element.js';
   template: html`
     <slot></slot>
   `,
-  useShadow: true,
 })
 class VoidButton extends HTMLElement {
   public connectedCallback() {

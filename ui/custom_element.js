@@ -13,7 +13,7 @@ export function customElement(config) {
             throw new Error('Custom element names must contain at least one dash');
         }
         if (!config.template) {
-            throw new Error('You need to pass a template for the element');
+            throw new Error('Custom elements must have a template');
         }
         const template = document.createElement('template');
         if (config.style) {
@@ -24,12 +24,7 @@ export function customElement(config) {
         const connectedCallback = cls.prototype.connectedCallback || nullFunction;
         cls.prototype.connectedCallback = function () {
             const clone = document.importNode(template.content, true);
-            if (config.useShadow) {
-                this.attachShadow({ mode: 'open' }).appendChild(clone);
-            }
-            else {
-                this.appendChild(clone);
-            }
+            this.attachShadow({ mode: 'open' }).appendChild(clone);
             connectedCallback.call(this);
         };
         window.customElements.define(config.selector, cls);

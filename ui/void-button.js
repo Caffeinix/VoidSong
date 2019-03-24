@@ -37,7 +37,6 @@ VoidButton = __decorate([
         template: html `
     <slot></slot>
   `,
-        useShadow: true,
     })
 ], VoidButton);
 //# sourceMappingURL=void-button.js.map
