@@ -127,6 +127,9 @@ export interface Systems {
   battery: Battery;
   powerRegulator: PowerRegulator;
   jumpDrive: JumpDrive;
+  navComputer: NavComputer;
+  combatComputer: CombatComputer;
+  lifeSupport: LifeSupport;
 }
 
 export interface System {
@@ -285,4 +288,16 @@ export interface JumpDrive extends PoweredSystem {
    * @inherent
    */
   driftRatioLateral: number;
+}
+
+export interface NavComputer extends PoweredSystem {
+
+}
+
+export interface CombatComputer extends PoweredSystem {
+
+}
+
+export interface LifeSupport extends PoweredSystem {
+
 }

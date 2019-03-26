@@ -1,5 +1,5 @@
 import { LIGHT_SECOND_IN_WORLD_UNITS } from './constants.js';
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 import { Positions } from './operations/positions.js';
 import { Ships } from './operations/ships.js';
 /**

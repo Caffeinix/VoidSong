@@ -4,7 +4,7 @@ export class DebugView {
         if (!debugView) {
             debugView = document.createElement('section');
             debugView.id = 'debugView';
-            document.body.appendChild(debugView);
+            document.getElementById('primaryColumn').appendChild(debugView);
         }
         let subview = debugView.querySelector(`.${id}`);
         if (!subview) {

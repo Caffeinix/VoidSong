@@ -12,19 +12,29 @@
   <script type="module" src="ui/void_button.js"></script>
   <script type="module" src="ui/void_page.js"></script>
   <script type="module" src="ui/void_page_switcher.js"></script>
-
 </head>
 
 <body>
-  <void-page-switcher index="0">
-    <void-page header="Tactical" id="tacticalPage">
-      <canvas id="tactical" width="600" height="600"></canvas>
-      <void-button id="plotJumpButton">Plot jump</void-button>
+  <div id="primaryColumn">
+    <void-page-switcher id="primarySwitcher" index="0">
+      <void-page header="Tactical" id="tacticalPage">
+        <canvas id="tactical" width="600" height="600"></canvas>
+        <void-button id="plotJumpButton">Plot jump</void-button>
+      </void-page>
+      <void-page header="Systems" id="systemsPage">
+      </void-page>
+    </void-page-switcher>
+  </div>
+  <div id="secondaryColumn">
+    <void-page header="Status" id="statusPage">
+      <div id="batteryGraph"></div>
+      <div id="reactorGraph"></div>
+      <div id="jumpDriveGraph"></div>
     </void-page>
-    <void-page header="Systems" id="systemsPage">
+    <void-page header="Debug" id="debugPage">
+      <div id="debug"></div>
     </void-page>
-  </void-page-switcher>
-  <div id="debug"></div>
+  </div>
 </body>
 
 </html>

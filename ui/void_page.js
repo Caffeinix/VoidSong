@@ -48,7 +48,7 @@ VoidPage = __decorate([
     align-items: center;
     padding-left: 12px;
     height: 32px;
-    font: 16px 'Saira Condensed';
+    font: 16px 'Saira Condensed', sans-serif;
     cursor: default;
     user-select: none;
     color: #000;

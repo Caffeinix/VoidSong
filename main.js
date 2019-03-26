@@ -14,7 +14,9 @@ const computer = {};
 const updater = new Updater();
 const physics = new Physics();
 const renderer = new Renderer();
-const testGraphRenderer = new GraphRenderer(document.getElementById('systemsPage'), 'actualShips.:player-ship.systems.battery.charge', 'actualShips.:player-ship.systems.battery.capacity', 200, 100);
+const batteryGraphRenderer = new GraphRenderer(document.getElementById('batteryGraph'), 'actualShips.:player-ship.systems.battery.charge', 'actualShips.:player-ship.systems.battery.capacity', 200, 100);
+const jumpDriveGraphRenderer = new GraphRenderer(document.getElementById('jumpDriveGraph'), 'actualShips.:player-ship.systems.jumpDrive.charge', 'actualShips.:player-ship.systems.jumpDrive.capacity', 200, 100);
+const reactorGraphRenderer = new GraphRenderer(document.getElementById('reactorGraph'), 'actualShips.:player-ship.systems.reactor.powerOutput', 'actualShips.:player-ship.systems.reactor.maxPowerOutput', 200, 100);
 const enterprise = {
     id: getNextContactId(),
     exists: true,
@@ -46,15 +48,15 @@ const enterprise = {
     systems: {
         reactor: {
             enabled: true,
-            maxPowerOutput: 1000,
-            powerOutput: 1000,
-            powerOutputDelta: -100,
-            minPowerOutputDelta: -100,
-            maxPowerOutputDelta: 100,
+            maxPowerOutput: 500,
+            powerOutput: 500,
+            powerOutputDelta: -50,
+            minPowerOutputDelta: -50,
+            maxPowerOutputDelta: 50,
         },
         battery: {
             enabled: true,
-            capacity: 6000,
+            capacity: 20000,
             charge: 0,
             maxPowerInput: 200,
             maxPowerOutput: 500,
@@ -71,7 +73,7 @@ const enterprise = {
             charging: false,
             charge: 0,
             destination: undefined,
-            requestedPowerInput: 80,
+            requestedPowerInput: 0,
             powerInput: 0,
             powerPriority: 0,
             maxPowerInput: 240,
@@ -82,6 +84,27 @@ const enterprise = {
             driftRatioMedial: 0.15,
             driftRatioLateral: 0.05,
         },
+        navComputer: {
+            enabled: true,
+            requestedPowerInput: 80,
+            powerInput: 80,
+            maxPowerInput: 80,
+            powerPriority: 2,
+        },
+        combatComputer: {
+            enabled: true,
+            requestedPowerInput: 40,
+            powerInput: 40,
+            maxPowerInput: 600,
+            powerPriority: 1,
+        },
+        lifeSupport: {
+            enabled: true,
+            requestedPowerInput: 30,
+            powerInput: 30,
+            maxPowerInput: 30,
+            powerPriority: 0,
+        }
     },
 };
 const reliant = {
@@ -151,6 +174,27 @@ const reliant = {
             driftRatioMedial: 0.15,
             driftRatioLateral: 0.05,
         },
+        navComputer: {
+            enabled: true,
+            requestedPowerInput: 80,
+            powerInput: 80,
+            maxPowerInput: 80,
+            powerPriority: 2,
+        },
+        combatComputer: {
+            enabled: true,
+            requestedPowerInput: 40,
+            powerInput: 40,
+            maxPowerInput: 600,
+            powerPriority: 1,
+        },
+        lifeSupport: {
+            enabled: true,
+            requestedPowerInput: 30,
+            powerInput: 30,
+            maxPowerInput: 30,
+            powerPriority: 0,
+        }
     },
 };
 const world = {
@@ -231,14 +275,31 @@ function runGameLoop() {
     updater.update(world, clock, snapshots, computer);
     physics.simulate(world, clock, snapshots);
     renderer.render(world, computer);
-    testGraphRenderer.render(world, computer, clock);
+    batteryGraphRenderer.render(world, computer, clock);
+    reactorGraphRenderer.render(world, computer, clock);
+    jumpDriveGraphRenderer.render(world, computer, clock);
     window.requestAnimationFrame(runGameLoop);
     // (document.getElementById('debug') as HTMLElement).textContent =
     //    JSON.stringify(world.actualShips[0].systems, undefined, 2);
 }
+function togglePaused() {
+    if (clock.isPaused()) {
+        clock.unpause();
+    }
+    else {
+        console.log('Pausing');
+        clock.pause();
+    }
+}
 window.addEventListener('load', () => {
     console.log('Initializing game...');
     runGameLoop();
+});
+window.addEventListener('keydown', (event) => {
+    if (event.key === ' ') {
+        togglePaused();
+        event.preventDefault();
+    }
 });
 const plotJumpButton = document.getElementById('plotJumpButton');
 plotJumpButton.addEventListener('activate', (event) => {

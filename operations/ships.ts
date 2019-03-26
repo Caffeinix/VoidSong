@@ -6,7 +6,7 @@ import { Ship } from '../model/ship.js';
 import { ShipComputer } from '../ship_computer.js';
 import { SnapshotManager } from '../snapshot_manager.js';
 import { Batteries } from './batteries.js';
-import { DebugView } from './debug_view.js';
+import { DebugView } from '../debug_view.js';
 import { JumpDrives } from './jump_drives.js';
 import { Positions } from './positions.js';
 import { PowerDistribution } from './power_distribution.js';

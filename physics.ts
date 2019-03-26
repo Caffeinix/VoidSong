@@ -3,7 +3,7 @@ import { LIGHT_SECOND_IN_WORLD_UNITS, SECTOR_SIZE_IN_WORLD_UNITS } from './const
 import { ContactId } from './contact_id.js';
 import { Ship } from './model/ship.js';
 import { World } from './model/world.js';
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 import { Positions } from './operations/positions.js';
 import { Ships } from './operations/ships.js';
 import { SnapshotManager } from './snapshot_manager.js';

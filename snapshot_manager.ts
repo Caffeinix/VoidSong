@@ -1,7 +1,7 @@
 import { Clock, Timestamp } from './clock.js';
 import { ContactId } from './contact_id.js';
 import { Ship } from './model/ship.js';
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 import { Snapshot } from './snapshot.js';
 
 export class SnapshotManager {

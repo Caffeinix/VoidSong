@@ -1,4 +1,4 @@
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 export class GraphRenderer {
     constructor(parent, selector, maxSelector, width, height) {
         this.duration = 30.0;
@@ -9,12 +9,12 @@ export class GraphRenderer {
         this._history = [];
         this._selector = selector;
         this._maxSelector = maxSelector;
-        this._canvas.classList.add('graph');
         this._canvas.style.width = width + 'px';
         this._canvas.style.height = height + 'px';
         this._canvas.width = width * window.devicePixelRatio;
         this._canvas.height = height * window.devicePixelRatio;
         (parent || document.body).appendChild(this._canvas);
+        this._canvas.parentElement.classList.add('graph');
     }
     render(world, computer, clock) {
         this._history.push([clock.get().seconds, this.querySelector(world, this._selector) || 0]);

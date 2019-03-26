@@ -1,4 +1,4 @@
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 import { Snapshot } from './snapshot.js';
 export class SnapshotManager {
     constructor() {

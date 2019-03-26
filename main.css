@@ -1,17 +1,22 @@
 body {
   background-color: #202124;
   color: white;
+  display: flex;
+}
+
+#primaryColumn {
+  flex: 1;
+}
+
+#secondaryColumn {
+  margin-left: 4px;
+  max-width: 408px;
 }
 
 #debug {
-  position: absolute;
-  width: 400px;
-  top: 0;
-  bottom: 0;
-  right: 0;
+  min-width: 400px;
   white-space: pre-wrap;
   font-family: monospace;
-  pointer-events: none;
 }
 
 #debugView > h1 {
@@ -33,6 +38,7 @@ body {
 }
 
 .graph {
+  display: inline-block;
   border: 1px solid #404450;
   border-radius: 4px;
 }

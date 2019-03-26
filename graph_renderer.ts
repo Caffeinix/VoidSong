@@ -2,7 +2,7 @@ import { Clock } from './clock.js';
 import { DeepReadonly } from './deep_readonly.js';
 import { Ship } from './model/ship.js';
 import { World } from './model/world.js';
-import { DebugView } from './operations/debug_view.js';
+import { DebugView } from './debug_view.js';
 import { ShipComputer } from './ship_computer.js';
 
 export class GraphRenderer {
@@ -19,12 +19,12 @@ export class GraphRenderer {
               width: number, height: number) {
     this._selector = selector;
     this._maxSelector = maxSelector;
-    this._canvas.classList.add('graph');
     this._canvas.style.width = width + 'px';
     this._canvas.style.height = height + 'px';
     this._canvas.width = width * window.devicePixelRatio;
     this._canvas.height = height * window.devicePixelRatio;
     (parent || document.body).appendChild(this._canvas);
+    this._canvas.parentElement!.classList.add('graph');
   }
 
   public render(world: DeepReadonly<World>, computer: ShipComputer, clock: Readonly<Clock>) {
