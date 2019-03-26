@@ -33,8 +33,8 @@ VoidButton = __decorate([
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    color: #8AF;
-    background: #101012;
+    color: #000;
+    background: #8AF;
     border: 1px solid #8AF;
     padding: 1px 5px;
     border-top-left-radius: 6px;
@@ -49,28 +49,26 @@ VoidButton = __decorate([
 
   :host(:focus) {
     outline: none;
-    border-width: 2px;
-    padding: 0 4px;
+    border-color: #FFF;
   }
 
   :host(:hover) {
-    color: #ACF;
+    background-color: #ACF;
     border-color: #ACF;
   }
 
   :host(:active) {
-    color: #FFF;
+    background-color: #FFF;
     border-color: #FFF;
-    background-color: #202124;
   }
 
   slot {
     font: 12px 'Saira Condensed', sans-serif;
-    font-weight: 400;
+    font-weight: 500;
   }`,
         template: html `
     <slot></slot>
   `,
     })
 ], VoidButton);
-//# sourceMappingURL=void-button.js.map
+//# sourceMappingURL=void_button.js.map

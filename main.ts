@@ -21,7 +21,7 @@ const computer: ShipComputer = {};
 const updater = new Updater();
 const physics = new Physics();
 const renderer = new Renderer();
-const testGraphRenderer = new GraphRenderer(
+const testGraphRenderer = new GraphRenderer(document.getElementById('systemsPage'),
   'actualShips.:player-ship.systems.battery.charge',
   'actualShips.:player-ship.systems.battery.capacity', 200, 100);
 

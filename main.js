@@ -14,7 +14,7 @@ const computer = {};
 const updater = new Updater();
 const physics = new Physics();
 const renderer = new Renderer();
-const testGraphRenderer = new GraphRenderer('actualShips.:player-ship.systems.battery.charge', 'actualShips.:player-ship.systems.battery.capacity', 200, 100);
+const testGraphRenderer = new GraphRenderer(document.getElementById('systemsPage'), 'actualShips.:player-ship.systems.battery.charge', 'actualShips.:player-ship.systems.battery.capacity', 200, 100);
 const enterprise = {
     id: getNextContactId(),
     exists: true,

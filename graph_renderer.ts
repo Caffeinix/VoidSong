@@ -15,7 +15,8 @@ export class GraphRenderer {
   private readonly _maxSelector: string | undefined;
   private _history: Array<[number, number]> = [];
 
-  constructor(selector: string, maxSelector: string | undefined, width: number, height: number) {
+  constructor(parent: HTMLElement | null, selector: string, maxSelector: string | undefined,
+              width: number, height: number) {
     this._selector = selector;
     this._maxSelector = maxSelector;
     this._canvas.classList.add('graph');
@@ -23,7 +24,7 @@ export class GraphRenderer {
     this._canvas.style.height = height + 'px';
     this._canvas.width = width * window.devicePixelRatio;
     this._canvas.height = height * window.devicePixelRatio;
-    document.body.appendChild(this._canvas);
+    (parent || document.body).appendChild(this._canvas);
   }
 
   public render(world: DeepReadonly<World>, computer: ShipComputer, clock: Readonly<Clock>) {

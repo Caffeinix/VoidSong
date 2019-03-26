@@ -2,20 +2,29 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Void Song</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-    <link href="https://fonts.googleapis.com/css?family=Saira+Condensed:400,700" rel="stylesheet">
-    <script type="module" src="main.js"></script>
-    <script type="module" src="ui/void-button.js"></script>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Void Song</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
+  <link href="https://fonts.googleapis.com/css?family=Saira+Condensed:400,500" rel="stylesheet">
+  <script type="module" src="main.js"></script>
+  <script type="module" src="ui/void_button.js"></script>
+  <script type="module" src="ui/void_page.js"></script>
+  <script type="module" src="ui/void_page_switcher.js"></script>
+
 </head>
 
 <body>
-    <canvas id="tactical" width="600" height="600"></canvas>
-    <void-button id="plotJumpButton">Plot jump</void-button>
-    <div id="debug"></div>
+  <void-page-switcher index="0">
+    <void-page header="Tactical" id="tacticalPage">
+      <canvas id="tactical" width="600" height="600"></canvas>
+      <void-button id="plotJumpButton">Plot jump</void-button>
+    </void-page>
+    <void-page header="Systems" id="systemsPage">
+    </void-page>
+  </void-page-switcher>
+  <div id="debug"></div>
 </body>
 
 </html>
